@@ -1,0 +1,110 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Adrian Syntax Notation",
+	"scopeName": "source.asn",
+	"patterns": [
+		{
+			"include": "#element"
+		},
+		{
+			"include": "#text"
+		}
+	],
+	"repository": {
+		"text": {
+			"name": "string.unquoted",
+			"match": "(\\b|\\s)[^@\\(\\)\\[\\]]+"
+		},
+		"element": {
+			"name": "keyword.other",
+			"begin": "[@]",
+			"end": "\\s",
+			"patterns": [
+				{
+					"include": "#group"
+				},
+				{
+					"include": "#set"
+				},
+				{
+					"name": "entity.name.class",
+					"match": "(\\w)+"
+				}
+			]
+		},
+		"set": {
+			"name": "meta.set",
+			"begin": "\\[",
+			"end": "\\]",
+			"beginCaptures": {
+				"0": {
+					"name": "bracket.open"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "bracket.close"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#or"
+				}
+			]
+		},
+		"or": {
+			"name": "keyword.operator",
+			"begin": "#element\\|",
+			"end": "#element",
+			"patterns": [
+				{
+					"include": "#or"
+				}
+			]
+		},
+		"group": {
+			"patterns": [
+				{
+					"name": "meta.group.bracket.round",
+					"begin": "\\(",
+					"end": "\\)",
+					"beginCaptures": {
+						"0": {
+							"name": "bracket.open"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "bracket.close"
+						}
+					},
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				},
+				{
+					"name": "meta.group.bracket.square",
+					"begin": "\\[",
+					"end": "\\]",
+					"beginCaptures": {
+						"0": {
+							"name": "bracket.open"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "bracket.close"
+						}
+					},
+					"patterns": [
+						{
+							"include": "$self"
+						}
+					]
+				}
+			]
+		}
+	}
+}
