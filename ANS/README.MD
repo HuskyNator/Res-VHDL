@@ -10,13 +10,14 @@ It is designed to
 >   + All names are defined as `name = elements`.
 > - Groups: `@[element element ...]`
 > - Element from set: `@[element | element | ...]`
-> - Optional & Repetition:
+> - Count (Optional & Repetition):
 > 	+ Optional: `@?element` (thus also `@?[group]`)
 > 	+ Repetition (any number): `@*element`
 > 	+ Repetition (1 or more): `@+element`
 >   + Repetition (a till b): `@a-b*element`
 > - List: `@^delimiter` followed by a repetition
 >	+ `@^;+[@thing]` is equivalent to `@thing @*[; @thing]`
+>   + For multicharacter delimiters, use `@^(text)` instead.
 
 2. Both `[]` and `()` brackets can be used interchangeably.  
 3. All other parts should be considered literal text.

@@ -1,0 +1,78 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Adrian Syntax Notation
+scopeName: source.asn
+patterns:
+    - include: "#text"
+    - include: "#element"
+repository:
+    text:
+        name: string.unquoted
+        match: &text ([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+
+    element:
+        name: keyword.element
+        begin: "@(#listkey_single|#listkey_multi)?(#count_single|#count_multi)?"
+        end: \W
+        patterns:
+            - include: "#group"
+            - include: "#set"
+            - include: "#placeholder"
+    # List key
+    listkey_single:
+        name: meta.cast.listkey.single
+        match: '\^.(#count)?'
+    listkey_multi:
+        name: meta.cast.listkey.multi
+        match: '\^\(*text\)(#count)?'
+    # Count
+    count_single:
+        name: meta.cast.count.single
+        match: '?|+|*'
+    count_multi:
+        name: meta.cast.count.multi
+        match: '[0-9]*\-[0-9]*\*'
+    
+    placeholder:
+        name: entity.name.class
+        match: (\w)+
+    set:
+        name: meta.set
+        begin: \[
+        end: \]
+        beginCaptures:
+            "0":
+                name: bracket.open
+        endCaptures:
+            "0":
+                name: bracket.close
+        patterns:
+            - include: "#or"
+    or:
+        name: keyword.operator
+        begin: '#element\|'
+        end: "#element"
+        patterns:
+            - include: "#or"
+    group:
+        patterns:
+            - name: meta.group.bracket.round
+              begin: \(
+              end: \)
+              beginCaptures:
+                  "0":
+                      name: bracket.open
+              endCaptures:
+                  "0":
+                      name: bracket.close
+              patterns:
+                  - include: $self
+            - name: meta.group.bracket.square
+              begin: \[
+              end: \]
+              beginCaptures:
+                  "0":
+                      name: bracket.open
+              endCaptures:
+                  "0":
+                      name: bracket.close
+              patterns:
+                  - include: $self
