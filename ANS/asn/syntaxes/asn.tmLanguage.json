@@ -4,21 +4,21 @@
 	"scopeName": "source.asn",
 	"patterns": [
 		{
-			"include": "#element"
+			"include": "#text"
 		},
 		{
-			"include": "#text"
+			"include": "#element"
 		}
 	],
 	"repository": {
 		"text": {
 			"name": "string.unquoted",
-			"match": "(\\b|\\s)[^@\\(\\)\\[\\]]+"
+			"match": "([^@\\s\\[\\]\\(\\)\\\\]|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\\\@|\\\\\\\\)+"
 		},
 		"element": {
 			"name": "keyword.other",
-			"begin": "[@]",
-			"end": "\\s",
+			"begin": "@(\\?)?",
+			"end": "\\W",
 			"patterns": [
 				{
 					"include": "#group"
