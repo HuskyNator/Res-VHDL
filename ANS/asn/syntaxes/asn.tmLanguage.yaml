@@ -2,6 +2,8 @@ $schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlangua
 name: Adrian Syntax Notation
 scopeName: source.asn
 patterns:
+    - include: "#invalid_escape"
+    # - include: "#invalid_list"
     - include: "#group_round"
     - include: "#group_square"
     - include: "#placeholder"
@@ -29,18 +31,20 @@ repository:
     # Placeholder
     placeholder:
         name: entity.name.class
-        match: '@([\?|\+|\*]|[0-9]*\-[0-9]*\*)?([a-zA-Z_]\w*)'
+        match: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?([a-zA-Z_]\w*)'
+        captures:
+            "1": keyword.operator.element
     
     # Group (& Set)
 
-        # @
-        # (                             #1 List
-            # (\^)                          #2 Operator
-            # (                             #3 Delimiter
-                # (.)                           #4 Single
+        # (@)                           #1 Element Operator
+        # (                             #2 List
+            # (\^)                          #3 Operator
+            # (                             #4 Delimiter
+                # (.)                           #5 Single
             # |
-                # \((                           #5 Multiple
-                    # (                             #6 Character
+                # \((                           #6 Multiple
+                    # (                             #7 Character
                         # [^@\s\[\]\(\)\\]
                     # |
                         # \\\[
@@ -54,37 +58,39 @@ repository:
                         # \\\@
                     # |
                         # \\\\
-                    # )+                            #6 Character
-                # )\)                          #5 Multiple
-            # )                             #3 Delimiter
-        # )?                            #1 List
-        # (                             #7 Count
+                    # )+                            #7 Character
+                # )\)                          #6 Multiple
+            # )                             #4 Delimiter
+        # )?                            #2 List
+        # (                             #8 Count
             # [\?|\+|\*]
         # |
             # [0-9]*\-[0-9]*\*
-        # )?                            #7 Count
+        # )?                            #8 Count
         # \(
 
     group_round:
         name: meta.group.bracket.round
-        begin: '@((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\('
+        begin: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\('
         end: \)
         beginCaptures:
             "0":
                 name: bracket.open.round
             "1":
-                name: meta.list
+                name: keyword.operator.element
             "2":
-                name: keyword.operator.list
+                name: meta.list
             "3":
-                name: keyword.operator.delimiter
+                name: keyword.operator.list
             "4":
-                name: string.other
+                name: keyword.operator.delimiter
             "5":
                 name: string.other
-            # "6":
+            "6":
+                name: string.other
+            # "7":
             #     name: string.other
-            "7":
+            "8":
                 name: keyword.operator.count
         endCaptures:
             "0":
@@ -95,24 +101,26 @@ repository:
             - include: $self
     group_square:    
         name: meta.group.bracket.square
-        begin: '@((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\['
+        begin: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\['
         end: \]
         beginCaptures:
             "0":
                 name: bracket.open.round
             "1":
-                name: meta.list
+                name: keyword.operator.element
             "2":
-                name: keyword.operator.list
+                name: meta.list
             "3":
-                name: keyword.operator.delimiter
+                name: keyword.operator.list
             "4":
-                name: string.other
+                name: keyword.operator.delimiter
             "5":
                 name: string.other
-            # "6":
+            "6":
+                name: string.other
+            # "7":
             #     name: string.other
-            "7":
+            "8":
                 name: keyword.operator.count
         endCaptures:
             "0":
@@ -121,3 +129,10 @@ repository:
             - name: keyword.operator.or
               match: '\|' # match 'or' for set
             - include: $self
+
+    invalid_escape:
+        name: invalid.illegal
+        match: '(?<!\\)\\(?=[^\[\]\(\)@\\])'
+
+    # invalid_list:
+        # name: invalid.illegal

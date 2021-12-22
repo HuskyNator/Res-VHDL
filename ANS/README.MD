@@ -24,6 +24,9 @@ It is designed to
 4. Special symbols (`[ ] ( ) @ \`) need to be escaped using a `\` in text.
 5. All words have implied seperating whitespace.
 
+## Warnings
+- Due to the way VSCode TextMate highlighting works, direct placeholder count highlighting does not work.
+
 ## Future Considerations
 - Possibly customize delimiter using a master rule `delimiter = "@";`
 - Possibly add whitespace sensitivity alternative. This could be moving more towards ABNF, though delimiters could also be used to refer to whitespace tokens like `@tab`.
