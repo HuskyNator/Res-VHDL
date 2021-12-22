@@ -5,16 +5,19 @@ patterns:
     - include: "#invalid_escape"
     - include: "#invalid_list_square"
     - include: "#invalid_list_round"
+    - include: "#invalid_or_start"
+    - include: "#invalid_or_end"
     - include: "#group_round"
     - include: "#group_square"
     - include: "#list_round"
     - include: "#list_square"
     - include: "#placeholder"
     - include: "#text"
+    - include: "#invalid_text"
 repository:
     text:
         name: string.unquoted
-        match: &text ([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+
+        match: &text ([^@\s\[\]\(\)\|\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\||\\\\)+
 
     # List key
     listkey_single:
@@ -141,7 +144,7 @@ repository:
                 name: bracket.open
         patterns:
             - name: keyword.operator.or
-              match: '\|' # match 'or' for set
+              match: '(?<!\[)\s*\|\s*(?!\])' # match 'or' for set, exclude invalid or
             - include: $self
     list_round:
         name: meta.list.round
@@ -171,17 +174,28 @@ repository:
                 name: bracket.close
         patterns:
             - name: keyword.operator.or
-              match: '\|' # match 'or' for set
+              match: '(?<!\())\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or
             - include: $self
 
     invalid_escape:
-        name: invalid.illegal
+        name: invalid.illegal.escape
         match: '(?<!\\)\\(?=[^\[\]\(\)@\\])'
 
     invalid_list_square:
-        name: invalid.illegal
+        name: invalid.illegal.list.square
         match: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))\?\['
 
     invalid_list_round:
-        name: invalid.illegal
+        name: invalid.illegal.list.round
         match: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))\?\('
+
+    invalid_or_start:
+        name: invalid.illegal.or.start
+        match: '(?<=(\[|\())(\s)*\|'
+    invalid_or_end:
+        name: invalid.illegal.or.end
+        match: '\|(\s)*(?=(\]|\)))'
+    
+    invalid_text:
+        name: invalid.illegal.text
+        match: &text '(@|\[|\]|\(|\)|\||\\)'
