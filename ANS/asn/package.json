@@ -10,16 +10,40 @@
         "Programming Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "asn",
-            "aliases": ["ASN", "asn"],
-            "extensions": ["asn"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "asn",
-            "scopeName": "source.asn",
-            "path": "./syntaxes/asn.tmLanguage.json"
-        }]
+        "markdown.previewScripts": [],
+        "languages": [
+            {
+                "id": "asn",
+                "aliases": [
+                    "ASN",
+                    "asn"
+                ],
+                "extensions": [
+                    "asn"
+                ],
+                "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "asn-markdown"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "asn",
+                "scopeName": "source.asn",
+                "path": "./syntaxes/asn.tmLanguage.json"
+            },
+            {
+                "language": "asn-markdown",
+                "scopeName": "markdown.codeblock.asn",
+                "path": "./syntaxes/asn-markdown.tmLanguage.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.asn": "asn"
+                }
+            }
+        ]
     }
 }

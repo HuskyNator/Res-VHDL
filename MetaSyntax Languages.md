@@ -17,7 +17,7 @@ porttype = "in" | "out" | "inout" | "buffer";
 ```
 
 ### Adrian Syntax Notation (ASN):
-```
+```asn
 @entity =
 	entity @name is
 		@?[generic (@^;*[@generic])]
