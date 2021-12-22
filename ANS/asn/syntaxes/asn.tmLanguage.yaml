@@ -4,9 +4,8 @@ scopeName: source.asn
 patterns:
     - include: "#group_round"
     - include: "#group_square"
-    - include: "#set"
     - include: "#placeholder"
-    # - include: "#text"
+    - include: "#text"
 repository:
     text:
         name: string.unquoted
@@ -19,62 +18,106 @@ repository:
     listkey_multi:
         name: meta.cast.listkey.multi
         match: '\^\(*text\)(#count)?'
-    # Count
-    count_single:
-        name: meta.cast.count.single
-        match: '[\?|\+|\*]'
-    count_multi:
-        name: meta.cast.count.multi
-        match: '[0-9]*\-[0-9]*\*'
+    # # Count
+    # count_single:
+    #     name: meta.cast.count.single
+    #     match: '[\?|\+|\*]'
+    # count_multi:
+    #     name: meta.cast.count.multi
+    #     match: '[0-9]*\-[0-9]*\*'
     
     # Placeholder
     placeholder:
         name: entity.name.class
-        # match: '@(#listkey_single|#listkey_multi)?(#count_single|#count_multi)?(\w)+'
         match: '@([\?|\+|\*]|[0-9]*\-[0-9]*\*)?([a-zA-Z_]\w*)'
     
-    # Set
-    set:
-        name: meta.set
-        begin: '@(#listkey_single|#listkey_multi)?(#count_single|#count_multi)?\['
-        end: \]
-        beginCaptures:
-            "0":
-                name: bracket.open
-        endCaptures:
-            "0":
-                name: bracket.close
-        patterns:
-            - include: "#or"
-    or:
-        name: keyword.operator
-        begin: '#element\|'
-        end: "#element"
-        patterns:
-            - include: "#or"
-    
-    # Group
+    # Group (& Set)
+
+        # @
+        # (                             #1 List
+            # (\^)                          #2 Operator
+            # (                             #3 Delimiter
+                # (.)                           #4 Single
+            # |
+                # \((                           #5 Multiple
+                    # (                             #6 Character
+                        # [^@\s\[\]\(\)\\]
+                    # |
+                        # \\\[
+                    # |
+                        # \\\]
+                    # |
+                        # \\\(
+                    # |
+                        # \\\)
+                    # |
+                        # \\\@
+                    # |
+                        # \\\\
+                    # )+                            #6 Character
+                # )\)                          #5 Multiple
+            # )                             #3 Delimiter
+        # )?                            #1 List
+        # (                             #7 Count
+            # [\?|\+|\*]
+        # |
+            # [0-9]*\-[0-9]*\*
+        # )?                            #7 Count
+        # \(
+
     group_round:
         name: meta.group.bracket.round
-        begin: '@(#listkey_single|#listkey_multi)?(#count_single|#count_multi)?\('
+        begin: '@((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\('
         end: \)
         beginCaptures:
             "0":
-                name: bracket.open
+                name: bracket.open.round
+            "1":
+                name: meta.list
+            "2":
+                name: keyword.operator.list
+            "3":
+                name: keyword.operator.delimiter
+            "4":
+                name: string.other
+            "5":
+                name: string.other
+            # "6":
+            #     name: string.other
+            "7":
+                name: keyword.operator.count
         endCaptures:
             "0":
                 name: bracket.close
         patterns:
+            - name: keyword.operator.or
+              match: '\|' # match 'or' for set
             - include: $self
     group_square:    
         name: meta.group.bracket.square
-        begin: '@(#listkey_single|#listkey_multi)?(#count_single|#count_multi)?\['
+        begin: '@((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))?([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\['
         end: \]
         beginCaptures:
             "0":
-                name: bracket.open
+                name: bracket.open.round
+            "1":
+                name: meta.list
+            "2":
+                name: keyword.operator.list
+            "3":
+                name: keyword.operator.delimiter
+            "4":
+                name: string.other
+            "5":
+                name: string.other
+            # "6":
+            #     name: string.other
+            "7":
+                name: keyword.operator.count
         endCaptures:
             "0":
-                name: bracket.close
+                name: bracket.open
         patterns:
+            - name: keyword.operator.or
+              match: '\|' # match 'or' for set
             - include: $self
