@@ -12,20 +12,32 @@ patterns:
     - include: "#list_round"
     - include: "#list_square"
     - include: "#placeholder"
+    - include: "#class"
     - include: "#text"
-    - include: "#invalid_text"
+    # - include: "#invalid_text"
 repository:
+    class:
+        name: entity.name.class
+        match: ^\s*([a-zA-Z_]+)\s*(=)
+        captures:
+            "2":
+                name: keyword.operator.is
     text:
         name: string.unquoted
-        match: &text ([^@\s\[\]\(\)\|\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\||\\\\)+
+        match: &text ((@)([\?|\+|\*]|[0-9]*\-[0-9]*\*))?([^@\s\|\\]|\\\@|\\\||\\\\)+
+        captures:
+            "1":
+                name: keyword.operator.count
+            "2":
+                name: keyword.operator.element
 
     # List key
-    listkey_single:
-        name: meta.cast.listkey.single
-        match: '\^.(#count)?'
-    listkey_multi:
-        name: meta.cast.listkey.multi
-        match: '\^\(*text\)(#count)?'
+    # listkey_single:
+    #     name: meta.cast.listkey.single
+    #     match: '\^.(#count)?'
+    # listkey_multi:
+    #     name: meta.cast.listkey.multi
+    #     match: '\^\(*text\)(#count)?'
     # # Count
     # count_single:
     #     name: meta.cast.count.single
@@ -36,10 +48,14 @@ repository:
     
     # Placeholder
     placeholder:
-        name: entity.name.class
-        match: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?([a-zA-Z_]\w*)'
+        name: variable.other.placeholder
+        match: '((@)([\?|\+|\*]|[0-9]*\-[0-9]*\*))?(@)([a-zA-Z_]\w*)'
         captures:
             "1":
+                name: keyword.operator.count
+            "2":
+                name: keyword.operator.element
+            "4":
                 name: keyword.operator.element
     
     # List, Group, Set
@@ -80,7 +96,7 @@ repository:
     # Group & Set
     group_square:    
         name: meta.group.square
-        begin: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\['
+        begin: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?(@)?\['
         end: \]
         beginCaptures:
             "0":
@@ -89,6 +105,8 @@ repository:
                 name: keyword.operator.element
             "2":
                 name: keyword.operator.count
+            "3":
+                name: keyword.operator.element
         endCaptures:
             "0":
                 name: bracket.open
@@ -98,7 +116,7 @@ repository:
             - include: $self
     group_round:
         name: meta.group.round
-        begin: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?\('
+        begin: '(@)([\?|\+|\*]|[0-9]*\-[0-9]*\*)?(@)?\('
         end: \)
         beginCaptures:
             "0":
@@ -107,6 +125,8 @@ repository:
                 name: keyword.operator.element
             "2":
                 name: keyword.operator.count
+            "3":
+                name: keyword.operator.element
         endCaptures:
             "0":
                 name: bracket.open
@@ -118,7 +138,7 @@ repository:
     # List
     list_square:    
         name: meta.list.square
-        begin: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))([\+|\*]|[0-9]*\-[0-9]*\*)?\['
+        begin: '(@)((\^)((.)|\((([^@\s\|\\]|\\\@|\\\||\\\\)+)\)))([\+|\*]|[0-9]*\-[0-9]*\*)?\['
         end: \]
         beginCaptures:
             "0":
@@ -148,7 +168,7 @@ repository:
             - include: $self
     list_round:
         name: meta.list.round
-        begin: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))([\+|\*]|[0-9]*\-[0-9]*\*)?\('
+        begin: '(@)((\^)((.)|\((([^@\s\|\\]|\\\@|\\\||\\\\)+)\)))([\+|\*]|[0-9]*\-[0-9]*\*)?\('
         end: \)
         beginCaptures:
             "0":
@@ -174,28 +194,28 @@ repository:
                 name: bracket.close
         patterns:
             - name: keyword.operator.or
-              match: '(?<!\())\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or
+              match: '(?<!\()\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or
             - include: $self
 
     invalid_escape:
         name: invalid.illegal.escape
-        match: '(?<!\\)\\(?=[^\[\]\(\)@\\])'
+        match: '(?<!\\)\\(?=[^@\|\\])'
 
     invalid_list_square:
         name: invalid.illegal.list.square
-        match: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))\?\['
+        match: '(@)((\^)((.)|\((([^@\s\|\\]|\\\@|\\\|\\\\)+)\)))\?\['
 
     invalid_list_round:
         name: invalid.illegal.list.round
-        match: '(@)((\^)((.)|\((([^@\s\[\]\(\)\\]|\\\[|\\\]|\\\(|\\\)|\\\@|\\\\)+)\)))\?\('
+        match: '(@)((\^)((.)|\((([^@\s\|\\]|\\\@|\\\|\\\\)+)\)))\?\('
 
-    invalid_or_start:
+    invalid_or_start: # Will also triger falsely
         name: invalid.illegal.or.start
         match: '(?<=(\[|\())(\s)*\|'
-    invalid_or_end:
+    invalid_or_end: # Will also triger falsely
         name: invalid.illegal.or.end
         match: '\|(\s)*(?=(\]|\)))'
     
-    invalid_text:
-        name: invalid.illegal.text
-        match: &text '(@|\[|\]|\(|\)|\||\\)'
+    # invalid_text:
+    #     name: invalid.illegal.text
+    #     match: &text '(@|\[|\]|\(|\)|\||\\)'

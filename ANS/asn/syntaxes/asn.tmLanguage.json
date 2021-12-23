@@ -1,110 +1,257 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Adrian Syntax Notation",
-	"scopeName": "source.asn",
-	"patterns": [
-		{
-			"include": "#text"
-		},
-		{
-			"include": "#element"
-		}
-	],
-	"repository": {
-		"text": {
-			"name": "string.unquoted",
-			"match": "([^@\\s\\[\\]\\(\\)\\\\]|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\\\@|\\\\\\\\)+"
-		},
-		"element": {
-			"name": "keyword.other",
-			"begin": "@(\\?)?",
-			"end": "\\W",
-			"patterns": [
-				{
-					"include": "#group"
-				},
-				{
-					"include": "#set"
-				},
-				{
-					"name": "entity.name.class",
-					"match": "(\\w)+"
-				}
-			]
-		},
-		"set": {
-			"name": "meta.set",
-			"begin": "\\[",
-			"end": "\\]",
-			"beginCaptures": {
-				"0": {
-					"name": "bracket.open"
-				}
-			},
-			"endCaptures": {
-				"0": {
-					"name": "bracket.close"
-				}
-			},
-			"patterns": [
-				{
-					"include": "#or"
-				}
-			]
-		},
-		"or": {
-			"name": "keyword.operator",
-			"begin": "#element\\|",
-			"end": "#element",
-			"patterns": [
-				{
-					"include": "#or"
-				}
-			]
-		},
-		"group": {
-			"patterns": [
-				{
-					"name": "meta.group.bracket.round",
-					"begin": "\\(",
-					"end": "\\)",
-					"beginCaptures": {
-						"0": {
-							"name": "bracket.open"
-						}
-					},
-					"endCaptures": {
-						"0": {
-							"name": "bracket.close"
-						}
-					},
-					"patterns": [
-						{
-							"include": "$self"
-						}
-					]
-				},
-				{
-					"name": "meta.group.bracket.square",
-					"begin": "\\[",
-					"end": "\\]",
-					"beginCaptures": {
-						"0": {
-							"name": "bracket.open"
-						}
-					},
-					"endCaptures": {
-						"0": {
-							"name": "bracket.close"
-						}
-					},
-					"patterns": [
-						{
-							"include": "$self"
-						}
-					]
-				}
-			]
-		}
-	}
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Adrian Syntax Notation",
+  "scopeName": "source.asn",
+  "patterns": [
+    {
+      "include": "#invalid_escape"
+    },
+    {
+      "include": "#invalid_list_square"
+    },
+    {
+      "include": "#invalid_list_round"
+    },
+    {
+      "include": "#invalid_or_start"
+    },
+    {
+      "include": "#invalid_or_end"
+    },
+    {
+      "include": "#group_round"
+    },
+    {
+      "include": "#group_square"
+    },
+    {
+      "include": "#list_round"
+    },
+    {
+      "include": "#list_square"
+    },
+    {
+      "include": "#placeholder"
+    },
+    {
+      "include": "#class"
+    },
+    {
+      "include": "#text"
+    }
+  ],
+  "repository": {
+    "class": {
+      "name": "entity.name.class",
+      "match": "^\\s*([a-zA-Z_]+)\\s*(=)",
+      "captures": {
+        "2": {
+          "name": "keyword.operator.is"
+        }
+      }
+    },
+    "text": {
+      "name": "string.unquoted",
+      "match": "((@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*))?([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.count"
+        },
+        "2": {
+          "name": "keyword.operator.element"
+        }
+      }
+    },
+    "placeholder": {
+      "name": "variable.other.placeholder",
+      "match": "((@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*))?(@)([a-zA-Z_]\\w*)",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.count"
+        },
+        "2": {
+          "name": "keyword.operator.element"
+        },
+        "4": {
+          "name": "keyword.operator.element"
+        }
+      }
+    },
+    "group_square": {
+      "name": "meta.group.square",
+      "begin": "(@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*)?(@)?\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.round"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "2": {
+          "name": "keyword.operator.count"
+        },
+        "3": {
+          "name": "keyword.operator.element"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.open"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "\\|"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "group_round": {
+      "name": "meta.group.round",
+      "begin": "(@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*)?(@)?\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.round"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "2": {
+          "name": "keyword.operator.count"
+        },
+        "3": {
+          "name": "keyword.operator.element"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.open"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "\\|"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "list_square": {
+      "name": "meta.list.square",
+      "begin": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+)\\)))([\\+|\\*]|[0-9]*\\-[0-9]*\\*)?\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.round"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "2": {
+          "name": "meta.list"
+        },
+        "3": {
+          "name": "keyword.operator.list"
+        },
+        "4": {
+          "name": "keyword.operator.delimiter"
+        },
+        "5": {
+          "name": "string.other"
+        },
+        "6": {
+          "name": "string.other"
+        },
+        "8": {
+          "name": "keyword.operator.count"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.open"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "(?<!\\[)\\s*\\|\\s*(?!\\])"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "list_round": {
+      "name": "meta.list.round",
+      "begin": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+)\\)))([\\+|\\*]|[0-9]*\\-[0-9]*\\*)?\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.round"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "2": {
+          "name": "meta.list"
+        },
+        "3": {
+          "name": "keyword.operator.list"
+        },
+        "4": {
+          "name": "keyword.operator.delimiter"
+        },
+        "5": {
+          "name": "string.other"
+        },
+        "6": {
+          "name": "string.other"
+        },
+        "8": {
+          "name": "keyword.operator.count"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.close"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "(?<!\\()\\s*\\|\\s*(?!\\))"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "invalid_escape": {
+      "name": "invalid.illegal.escape",
+      "match": "(?<!\\\\)\\\\(?=[^@\\|\\\\])"
+    },
+    "invalid_list_square": {
+      "name": "invalid.illegal.list.square",
+      "match": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\|\\\\\\\\)+)\\)))\\?\\["
+    },
+    "invalid_list_round": {
+      "name": "invalid.illegal.list.round",
+      "match": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\|\\\\\\\\)+)\\)))\\?\\("
+    },
+    "invalid_or_start": {
+      "name": "invalid.illegal.or.start",
+      "match": "(?<=(\\[|\\())(\\s)*\\|"
+    },
+    "invalid_or_end": {
+      "name": "invalid.illegal.or.end",
+      "match": "\\|(\\s)*(?=(\\]|\\)))"
+    }
+  }
 }
