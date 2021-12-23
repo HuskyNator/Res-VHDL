@@ -20,15 +20,15 @@ porttype = "in" | "out" | "inout" | "buffer";
 ```asn
 entity =
 	entity @name is
-		@?[generic (@^;*[@generic]) ]
-		@?[port (@^;*[@port]); ]
-	end @?entity @?@name;
+		@?@[generic \(@^;*[@generic]\);]
+		@?[port \(@?^;+[@port]\);]
+	end @?entity @?@name;\
 
-generic = @name : @type @?[:= @default_value]
+generic = @name : @type @?[:= @default_value]\
 
-port = @name : @porttype @type
+port = @name : @porttype @type\
 
-porttype = @[in | out | inout | buffer ]
+porttype = @[in | out | inout | buffer]\
 ```
 
 ```VHDL
