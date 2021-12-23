@@ -3,7 +3,7 @@ name: Adrian Syntax Notation
 scopeName: source.asn
 patterns:
     - include: "#production"
-
+    - include: "#comment_line"
     - include: "#invalid_symbol"
 repository:
     production:
@@ -30,15 +30,29 @@ repository:
             - include: "#placeholder"
             - include: "#text"
             - include: "#text_quote_literal"
-            
+            - include: "#comment_line"
+
             - include: "#invalid_or_start"
             - include: "#invalid_or_end"
             - include: "#invalid_escape"
             - include: "#invalid_symbol"
-
+    
+    # Comments
+    # Text needs to match "\#" and "\\" before comments are matched.
+    comment_line:
+        name: comment.line #.number-sign
+        match: "#.*$"
+    comment_block:
+        name: comment.block
+        begin: '\\'
+        end: '\\'
+        patterns:
+            - match: '[^\\]*'
+    
+    # Text
     text:
         name: string.unquoted
-        match: ((@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*))?([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+(?![\[\(])
+        match: ((@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*))?([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+(?![\[\(])
         captures:
             "1":
                 name: keyword.operator.count
@@ -109,7 +123,8 @@ repository:
             - include: "#placeholder"
             - include: "#text"
             - include: "#text_quote_literal"
-            
+            - include: "#comment_line"
+
             - include: "#invalid_or_start"
             - include: "#invalid_or_end"
             - include: "#invalid_escape"
@@ -132,7 +147,7 @@ repository:
                 name: bracket.close.round
         patterns:
             - name: keyword.operator.or
-              match: '(?<!\()\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or
+              match: '(?<!\()\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or            
             - include: "#group_round"
             - include: "#group_square"
             
@@ -144,6 +159,7 @@ repository:
             - include: "#placeholder"
             - include: "#text"
             - include: "#text_quote_literal"
+            - include: "#comment_line"
             
             - include: "#invalid_or_start"
             - include: "#invalid_or_end"
@@ -153,7 +169,7 @@ repository:
     # List
     list_square:    
         name: meta.list.square
-        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\['
+        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\['
         end: \]
         beginCaptures:
             "0":
@@ -183,7 +199,7 @@ repository:
                 name: bracket.close.square
         patterns:
             - name: keyword.operator.or
-              match: '(?<!\[)\s*\|\s*(?!\])' # match 'or' for set, exclude invalid or
+              match: '(?<!\[)\s*\|\s*(?!\])' # match 'or' for set, exclude invalid or            
             - include: "#group_round"
             - include: "#group_square"
             
@@ -195,6 +211,7 @@ repository:
             - include: "#placeholder"
             - include: "#text"
             - include: "#text_quote_literal"
+            - include: "#comment_line"
             
             - include: "#invalid_or_start"
             - include: "#invalid_or_end"
@@ -202,7 +219,7 @@ repository:
             - include: "#invalid_symbol"
     list_round:
         name: meta.list.round
-        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\('
+        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\('
         end: \)
         beginCaptures:
             "0":
@@ -244,6 +261,7 @@ repository:
             - include: "#placeholder"
             - include: "#text"
             - include: "#text_quote_literal"
+            - include: "#comment_line"
             
             - include: "#invalid_or_start"
             - include: "#invalid_or_end"
@@ -252,15 +270,15 @@ repository:
 
     invalid_escape:
         name: invalid.illegal.escape
-        match: '(?<!\\)\\(?=[^@\|\\|\[|\]|\(|\)|`])'
+        match: '(?<!\\)\\(?=[^@\|\\|\[|\]|\(|\)|#|`])'
 
     invalid_list_square:
         name: invalid.illegal.list.square
-        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\)))[\?\-]\['
+        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)))[\?\-]\['
 
     invalid_list_round:
         name: invalid.illegal.list.round
-        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\`)+)\)))[\?\-]\('
+        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)))[\?\-]\('
 
     invalid_or_start:
         name: invalid.illegal.or.start

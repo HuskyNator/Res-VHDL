@@ -4,55 +4,95 @@
   "scopeName": "source.asn",
   "patterns": [
     {
-      "include": "#invalid_escape"
+      "include": "#production"
     },
     {
-      "include": "#invalid_list_square"
+      "include": "#comment_line"
     },
     {
-      "include": "#invalid_list_round"
-    },
-    {
-      "include": "#invalid_or_start"
-    },
-    {
-      "include": "#invalid_or_end"
-    },
-    {
-      "include": "#group_round"
-    },
-    {
-      "include": "#group_square"
-    },
-    {
-      "include": "#list_round"
-    },
-    {
-      "include": "#list_square"
-    },
-    {
-      "include": "#placeholder"
-    },
-    {
-      "include": "#class"
-    },
-    {
-      "include": "#text"
+      "include": "#invalid_symbol"
     }
   ],
   "repository": {
-    "class": {
-      "name": "entity.name.class",
-      "match": "^\\s*([a-zA-Z_]+)\\s*(=)",
-      "captures": {
+    "production": {
+      "name": "meta.class",
+      "begin": "^\\s*([a-zA-Z_]+)\\s*(=)",
+      "end": "(?<!\\\\)(\\\\)(?![\\@\\\\\\|\\[\\]\\(\\)`])",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.class"
+        },
         "2": {
-          "name": "keyword.operator.is"
+          "name": "keyword.operator.production.begin"
         }
-      }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.operator.production.end"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#group_round"
+        },
+        {
+          "include": "#group_square"
+        },
+        {
+          "include": "#list_round"
+        },
+        {
+          "include": "#list_square"
+        },
+        {
+          "include": "#invalid_list_square"
+        },
+        {
+          "include": "#invalid_list_round"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#text"
+        },
+        {
+          "include": "#text_quote_literal"
+        },
+        {
+          "include": "#comment_line"
+        },
+        {
+          "include": "#invalid_or_start"
+        },
+        {
+          "include": "#invalid_or_end"
+        },
+        {
+          "include": "#invalid_escape"
+        },
+        {
+          "include": "#invalid_symbol"
+        }
+      ]
+    },
+    "comment_line": {
+      "name": "comment.line",
+      "match": "#.*$"
+    },
+    "comment_block": {
+      "name": "comment.block",
+      "begin": "\\\\",
+      "end": "\\\\",
+      "patterns": [
+        {
+          "match": "[^\\\\]*"
+        }
+      ]
     },
     "text": {
       "name": "string.unquoted",
-      "match": "((@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*))?([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+",
+      "match": "((@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*))?([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+(?![\\[\\(])",
       "captures": {
         "1": {
           "name": "keyword.operator.count"
@@ -62,9 +102,19 @@
         }
       }
     },
+    "text_quote_literal": {
+      "name": "string.quoted.other",
+      "begin": "`",
+      "end": "`",
+      "patterns": [
+        {
+          "include": "#text"
+        }
+      ]
+    },
     "placeholder": {
       "name": "variable.other.placeholder",
-      "match": "((@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*))?(@)([a-zA-Z_]\\w*)",
+      "match": "((@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*))?(@)([a-zA-Z_]\\w*)",
       "captures": {
         "1": {
           "name": "keyword.operator.count"
@@ -79,11 +129,11 @@
     },
     "group_square": {
       "name": "meta.group.square",
-      "begin": "(@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*)?(@)?\\[",
+      "begin": "(@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)?(@)?\\[",
       "end": "\\]",
       "beginCaptures": {
         "0": {
-          "name": "bracket.open.round"
+          "name": "bracket.open.square"
         },
         "1": {
           "name": "keyword.operator.element"
@@ -97,85 +147,7 @@
       },
       "endCaptures": {
         "0": {
-          "name": "bracket.open"
-        }
-      },
-      "patterns": [
-        {
-          "name": "keyword.operator.or",
-          "match": "\\|"
-        },
-        {
-          "include": "$self"
-        }
-      ]
-    },
-    "group_round": {
-      "name": "meta.group.round",
-      "begin": "(@)([\\?|\\+|\\*]|[0-9]*\\-[0-9]*\\*)?(@)?\\(",
-      "end": "\\)",
-      "beginCaptures": {
-        "0": {
-          "name": "bracket.open.round"
-        },
-        "1": {
-          "name": "keyword.operator.element"
-        },
-        "2": {
-          "name": "keyword.operator.count"
-        },
-        "3": {
-          "name": "keyword.operator.element"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "bracket.open"
-        }
-      },
-      "patterns": [
-        {
-          "name": "keyword.operator.or",
-          "match": "\\|"
-        },
-        {
-          "include": "$self"
-        }
-      ]
-    },
-    "list_square": {
-      "name": "meta.list.square",
-      "begin": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+)\\)))([\\+|\\*]|[0-9]*\\-[0-9]*\\*)?\\[",
-      "end": "\\]",
-      "beginCaptures": {
-        "0": {
-          "name": "bracket.open.round"
-        },
-        "1": {
-          "name": "keyword.operator.element"
-        },
-        "2": {
-          "name": "meta.list"
-        },
-        "3": {
-          "name": "keyword.operator.list"
-        },
-        "4": {
-          "name": "keyword.operator.delimiter"
-        },
-        "5": {
-          "name": "string.other"
-        },
-        "6": {
-          "name": "string.other"
-        },
-        "8": {
-          "name": "keyword.operator.count"
-        }
-      },
-      "endCaptures": {
-        "0": {
-          "name": "bracket.open"
+          "name": "bracket.close.square"
         }
       },
       "patterns": [
@@ -184,13 +156,52 @@
           "match": "(?<!\\[)\\s*\\|\\s*(?!\\])"
         },
         {
-          "include": "$self"
+          "include": "#group_round"
+        },
+        {
+          "include": "#group_square"
+        },
+        {
+          "include": "#list_round"
+        },
+        {
+          "include": "#list_square"
+        },
+        {
+          "include": "#invalid_list_square"
+        },
+        {
+          "include": "#invalid_list_round"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#text"
+        },
+        {
+          "include": "#text_quote_literal"
+        },
+        {
+          "include": "#comment_line"
+        },
+        {
+          "include": "#invalid_or_start"
+        },
+        {
+          "include": "#invalid_or_end"
+        },
+        {
+          "include": "#invalid_escape"
+        },
+        {
+          "include": "#invalid_symbol"
         }
       ]
     },
-    "list_round": {
-      "name": "meta.list.round",
-      "begin": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\||\\\\\\\\)+)\\)))([\\+|\\*]|[0-9]*\\-[0-9]*\\*)?\\(",
+    "group_round": {
+      "name": "meta.group.round",
+      "begin": "(@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)?(@)?\\(",
       "end": "\\)",
       "beginCaptures": {
         "0": {
@@ -200,27 +211,15 @@
           "name": "keyword.operator.element"
         },
         "2": {
-          "name": "meta.list"
+          "name": "keyword.operator.count"
         },
         "3": {
-          "name": "keyword.operator.list"
-        },
-        "4": {
-          "name": "keyword.operator.delimiter"
-        },
-        "5": {
-          "name": "string.other"
-        },
-        "6": {
-          "name": "string.other"
-        },
-        "8": {
-          "name": "keyword.operator.count"
+          "name": "keyword.operator.element"
         }
       },
       "endCaptures": {
         "0": {
-          "name": "bracket.close"
+          "name": "bracket.close.round"
         }
       },
       "patterns": [
@@ -229,21 +228,246 @@
           "match": "(?<!\\()\\s*\\|\\s*(?!\\))"
         },
         {
-          "include": "$self"
+          "include": "#group_round"
+        },
+        {
+          "include": "#group_square"
+        },
+        {
+          "include": "#list_round"
+        },
+        {
+          "include": "#list_square"
+        },
+        {
+          "include": "#invalid_list_square"
+        },
+        {
+          "include": "#invalid_list_round"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#text"
+        },
+        {
+          "include": "#text_quote_literal"
+        },
+        {
+          "include": "#comment_line"
+        },
+        {
+          "include": "#invalid_or_start"
+        },
+        {
+          "include": "#invalid_or_end"
+        },
+        {
+          "include": "#invalid_escape"
+        },
+        {
+          "include": "#invalid_symbol"
+        }
+      ]
+    },
+    "list_square": {
+      "name": "meta.list.square",
+      "begin": "(@)(([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)(@)?)?((\\^)((.)|\\((([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\)|\\[(([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\]))([\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)?\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.square"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "3": {
+          "name": "keyword.operator.count"
+        },
+        "4": {
+          "name": "keyword.operator.element"
+        },
+        "5": {
+          "name": "meta.list"
+        },
+        "6": {
+          "name": "keyword.operator.list"
+        },
+        "7": {
+          "name": "keyword.operator.delimiter"
+        },
+        "8": {
+          "name": "string.other"
+        },
+        "9": {
+          "name": "string.other"
+        },
+        "11": {
+          "name": "string.other"
+        },
+        "13": {
+          "name": "keyword.operator.count"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.close.square"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "(?<!\\[)\\s*\\|\\s*(?!\\])"
+        },
+        {
+          "include": "#group_round"
+        },
+        {
+          "include": "#group_square"
+        },
+        {
+          "include": "#list_round"
+        },
+        {
+          "include": "#list_square"
+        },
+        {
+          "include": "#invalid_list_square"
+        },
+        {
+          "include": "#invalid_list_round"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#text"
+        },
+        {
+          "include": "#text_quote_literal"
+        },
+        {
+          "include": "#comment_line"
+        },
+        {
+          "include": "#invalid_or_start"
+        },
+        {
+          "include": "#invalid_or_end"
+        },
+        {
+          "include": "#invalid_escape"
+        },
+        {
+          "include": "#invalid_symbol"
+        }
+      ]
+    },
+    "list_round": {
+      "name": "meta.list.round",
+      "begin": "(@)(([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)(@)?)?((\\^)((.)|\\((([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\)|\\[(([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\]))([\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)?\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "bracket.open.round"
+        },
+        "1": {
+          "name": "keyword.operator.element"
+        },
+        "3": {
+          "name": "keyword.operator.count"
+        },
+        "4": {
+          "name": "keyword.operator.element"
+        },
+        "5": {
+          "name": "meta.list"
+        },
+        "6": {
+          "name": "keyword.operator.list"
+        },
+        "7": {
+          "name": "keyword.operator.delimiter"
+        },
+        "8": {
+          "name": "string.other"
+        },
+        "9": {
+          "name": "string.other"
+        },
+        "11": {
+          "name": "string.other"
+        },
+        "13": {
+          "name": "keyword.operator.count"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "bracket.close.round"
+        }
+      },
+      "patterns": [
+        {
+          "name": "keyword.operator.or",
+          "match": "(?<!\\()\\s*\\|\\s*(?!\\))"
+        },
+        {
+          "include": "#group_round"
+        },
+        {
+          "include": "#group_square"
+        },
+        {
+          "include": "#list_round"
+        },
+        {
+          "include": "#list_square"
+        },
+        {
+          "include": "#invalid_list_square"
+        },
+        {
+          "include": "#invalid_list_round"
+        },
+        {
+          "include": "#placeholder"
+        },
+        {
+          "include": "#text"
+        },
+        {
+          "include": "#text_quote_literal"
+        },
+        {
+          "include": "#comment_line"
+        },
+        {
+          "include": "#invalid_or_start"
+        },
+        {
+          "include": "#invalid_or_end"
+        },
+        {
+          "include": "#invalid_escape"
+        },
+        {
+          "include": "#invalid_symbol"
         }
       ]
     },
     "invalid_escape": {
       "name": "invalid.illegal.escape",
-      "match": "(?<!\\\\)\\\\(?=[^@\\|\\\\])"
+      "match": "(?<!\\\\)\\\\(?=[^@\\|\\\\|\\[|\\]|\\(|\\)|#|`])"
     },
     "invalid_list_square": {
       "name": "invalid.illegal.list.square",
-      "match": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\|\\\\\\\\)+)\\)))\\?\\["
+      "match": "(@)(([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)(@)?)?((\\^)((.)|\\((([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\)))[\\?\\-]\\["
     },
     "invalid_list_round": {
       "name": "invalid.illegal.list.round",
-      "match": "(@)((\\^)((.)|\\((([^@\\s\\|\\\\]|\\\\\\@|\\\\\\|\\\\\\\\)+)\\)))\\?\\("
+      "match": "(@)(([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*)(@)?)?((\\^)((.)|\\((([^@\\s\\|\\\\|\\[|\\]|\\(|\\)|#|`]|\\\\\\@|\\\\\\||\\\\\\\\|\\\\\\[|\\\\\\]|\\\\\\(|\\\\\\)|\\\\#|\\\\`)+)\\)))[\\?\\-]\\("
     },
     "invalid_or_start": {
       "name": "invalid.illegal.or.start",
@@ -252,6 +476,10 @@
     "invalid_or_end": {
       "name": "invalid.illegal.or.end",
       "match": "\\|(\\s)*(?=(\\]|\\)))"
+    },
+    "invalid_symbol": {
+      "name": "invalid.illegal.symbol",
+      "match": "\\S"
     }
   }
 }

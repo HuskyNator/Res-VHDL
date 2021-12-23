@@ -27,9 +27,10 @@ It is designed to
 3. Brackets `[]` and `()` can be used interchangeably.
 4. All other parts should be considered as literal text.
    1. Special symbols need to be escaped using a `\` in text:
-		>	`@`, `\`, `|`, `[`, `]`, `(`, `)`, `` ` ``
-   2. Alternatively literal strings can be used: `` `@\|[]()` ``
+		>	`@`, `\`, `|`, `[`, `]`, `(`, `)`, `#`, `` ` ``
+   2. Alternatively literal strings can be used: `` `@\|[]()#` ``
 5. All words have implied surrounding whitespace.
+6. Line comments are started with a `#`: `... #comment`
 
 ## Future Considerations
 - Possibly customize delimiter, if possible.
