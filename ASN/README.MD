@@ -1,8 +1,12 @@
-# Adrian syntax notation (ASN)
+# Adrian Syntax Notation (ASN)
 A custom notation, inspired by ABNF.
 It is designed to
 - Reduce extensive `"` use.
 - Simplify delimited lists.
+---
+## Example
+_TODO_
+
 ---
 ## Notation
 1. Productions are defined as: `production = elements\`

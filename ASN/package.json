@@ -1,4 +1,5 @@
 {
+    "repository": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS",
     "name": "asn",
     "displayName": "ASN",
     "description": "Adrian Syntax Notation Highlighting",
