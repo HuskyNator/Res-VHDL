@@ -29,12 +29,13 @@ _TODO_
 		+ `@^;+[@thing]` is equivalent to `@thing @*[; @thing]`
 
 3. Brackets `[]` and `()` can be used interchangeably.
+4. When using counts, groups/sets/lists can exclude their second `@`: `@?@[...]` -> `@?[...]`
 4. All other parts should be considered as literal text.
    1. Special symbols need to be escaped using a `\` in text:
 		>	`@`, `\`, `|`, `[`, `]`, `(`, `)`, `#`, `` ` ``
    2. Alternatively literal strings can be used: `` `@\|[]()#` ``
-5. All words have implied surrounding whitespace.
-6. Line comments are started with a `#`: `... #comment`
+5. All words have implied surrounding whitespace (see future considerations).
+6. Line comments start with a `#`: `... #comment`
 
 ## Future Considerations
 - Possibly customize delimiter, if possible.
