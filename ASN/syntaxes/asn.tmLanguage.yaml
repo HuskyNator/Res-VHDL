@@ -1,0 +1,292 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+name: Adrian Syntax Notation
+scopeName: source.asn
+patterns:
+    - include: "#production"
+    - include: "#comment_line"
+    - include: "#invalid_symbol"
+repository:
+    production:
+        name: meta.class
+        begin: ^\s*([a-zA-Z_]+)\s*(=)
+        end: (?<!\\)(\\)(?![\@\\\|\[\]\(\)`])
+        beginCaptures:
+            "1":
+                name: entity.name.class
+            "2":
+                name: keyword.operator.production.begin
+        endCaptures:
+            "1":
+                name: keyword.operator.production.end
+        patterns:
+            - include: "#group_round"
+            - include: "#group_square"
+            
+            - include: "#list_round"
+            - include: "#list_square"
+            - include: "#invalid_list_square"
+            - include: "#invalid_list_round"
+            
+            - include: "#placeholder"
+            - include: "#text"
+            - include: "#text_quote_literal"
+            - include: "#comment_line"
+
+            - include: "#invalid_or_start"
+            - include: "#invalid_or_end"
+            - include: "#invalid_escape"
+            - include: "#invalid_symbol"
+    
+    # Comments
+    # Text needs to match "\#" and "\\" before comments are matched.
+    comment_line:
+        name: comment.line #.number-sign
+        match: "#.*$"
+    comment_block:
+        name: comment.block
+        begin: '\\'
+        end: '\\'
+        patterns:
+            - match: '[^\\]*'
+    
+    # Text
+    text:
+        name: string.unquoted
+        match: ((@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*))?([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+(?![\[\(])
+        captures:
+            "1":
+                name: keyword.operator.count
+            "2":
+                name: keyword.operator.element
+    text_quote_literal:
+        name: string.quoted.other
+        begin: "`"
+        end: "`"
+        patterns:
+            - include: "#text"
+
+    # List key
+    # listkey_single:
+    #     name: meta.cast.listkey.single
+    #     match: '\^.(#count)?'
+    # listkey_multi:
+    #     name: meta.cast.listkey.multi
+    #     match: '\^\(*text\)(#count)?'
+    # # Count
+    # count_single:
+    #     name: meta.cast.count.single
+    #     match: '[\?|\+|\*]'
+    # count_multi:
+    #     name: meta.cast.count.multi
+    #     match: '[0-9]*\-[0-9]*\*'
+    
+    # Placeholder
+    placeholder:
+        name: variable.other.placeholder
+        match: '((@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*))?(@)([a-zA-Z_]\w*)'
+        captures:
+            "1":
+                name: keyword.operator.count
+            "2":
+                name: keyword.operator.element
+            "4":
+                name: keyword.operator.element
+    
+    # Group & Set
+    group_square:    
+        name: meta.group.square
+        begin: '(@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?(@)?\['
+        end: \]
+        beginCaptures:
+            "0":
+                name: bracket.open.square
+            "1":
+                name: keyword.operator.element
+            "2":
+                name: keyword.operator.count
+            "3":
+                name: keyword.operator.element
+        endCaptures:
+            "0":
+                name: bracket.close.square
+        patterns:
+            - name: keyword.operator.or
+              match: '(?<!\[)\s*\|\s*(?!\])' # match 'or' for set, exclude invalid or
+            - include: "#group_round"
+            - include: "#group_square"
+            
+            - include: "#list_round"
+            - include: "#list_square"
+            - include: "#invalid_list_square"
+            - include: "#invalid_list_round"
+            
+            - include: "#placeholder"
+            - include: "#text"
+            - include: "#text_quote_literal"
+            - include: "#comment_line"
+
+            - include: "#invalid_or_start"
+            - include: "#invalid_or_end"
+            - include: "#invalid_escape"
+            - include: "#invalid_symbol"
+    group_round:
+        name: meta.group.round
+        begin: '(@)([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?(@)?\('
+        end: \)
+        beginCaptures:
+            "0":
+                name: bracket.open.round
+            "1":
+                name: keyword.operator.element
+            "2":
+                name: keyword.operator.count
+            "3":
+                name: keyword.operator.element
+        endCaptures:
+            "0":
+                name: bracket.close.round
+        patterns:
+            - name: keyword.operator.or
+              match: '(?<!\()\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or            
+            - include: "#group_round"
+            - include: "#group_square"
+            
+            - include: "#list_round"
+            - include: "#list_square"
+            - include: "#invalid_list_square"
+            - include: "#invalid_list_round"
+            
+            - include: "#placeholder"
+            - include: "#text"
+            - include: "#text_quote_literal"
+            - include: "#comment_line"
+            
+            - include: "#invalid_or_start"
+            - include: "#invalid_or_end"
+            - include: "#invalid_escape"
+            - include: "#invalid_symbol"
+
+    # List
+    list_square:    
+        name: meta.list.square
+        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\['
+        end: \]
+        beginCaptures:
+            "0":
+                name: bracket.open.square
+            "1":
+                name: keyword.operator.element
+            "3":
+                name: keyword.operator.count
+            "4":
+                name: keyword.operator.element
+            "5":
+                name: meta.list
+            "6":
+                name: keyword.operator.list
+            "7":
+                name: keyword.operator.delimiter
+            "8":
+                name: string.other
+            "9":
+                name: string.other
+            "11":
+                name: string.other
+            "13":
+                name: keyword.operator.count
+        endCaptures:
+            "0":
+                name: bracket.close.square
+        patterns:
+            - name: keyword.operator.or
+              match: '(?<!\[)\s*\|\s*(?!\])' # match 'or' for set, exclude invalid or            
+            - include: "#group_round"
+            - include: "#group_square"
+            
+            - include: "#list_round"
+            - include: "#list_square"
+            - include: "#invalid_list_square"
+            - include: "#invalid_list_round"
+            
+            - include: "#placeholder"
+            - include: "#text"
+            - include: "#text_quote_literal"
+            - include: "#comment_line"
+            
+            - include: "#invalid_or_start"
+            - include: "#invalid_or_end"
+            - include: "#invalid_escape"
+            - include: "#invalid_symbol"
+    list_round:
+        name: meta.list.round
+        begin: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)|\[(([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\]))([\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)?\('
+        end: \)
+        beginCaptures:
+            "0":
+                name: bracket.open.round
+            "1":
+                name: keyword.operator.element
+            "3":
+                name: keyword.operator.count
+            "4":
+                name: keyword.operator.element
+            "5":
+                name: meta.list
+            "6":
+                name: keyword.operator.list
+            "7":
+                name: keyword.operator.delimiter
+            "8":
+                name: string.other
+            "9":
+                name: string.other
+            "11":
+                name: string.other
+            "13":
+                name: keyword.operator.count
+        endCaptures:
+            "0":
+                name: bracket.close.round
+        patterns:
+            - name: keyword.operator.or
+              match: '(?<!\()\s*\|\s*(?!\))' # match 'or' for set, exclude invalid or
+            - include: "#group_round"
+            - include: "#group_square"
+            
+            - include: "#list_round"
+            - include: "#list_square"
+            - include: "#invalid_list_square"
+            - include: "#invalid_list_round"
+            
+            - include: "#placeholder"
+            - include: "#text"
+            - include: "#text_quote_literal"
+            - include: "#comment_line"
+            
+            - include: "#invalid_or_start"
+            - include: "#invalid_or_end"
+            - include: "#invalid_escape"
+            - include: "#invalid_symbol"
+
+    invalid_escape:
+        name: invalid.illegal.escape
+        match: '(?<!\\)\\(?=[^@\|\\|\[|\]|\(|\)|#|`])'
+
+    invalid_list_square:
+        name: invalid.illegal.list.square
+        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)))[\?\-]\['
+
+    invalid_list_round:
+        name: invalid.illegal.list.round
+        match: '(@)(([\?|\+|\*]|[0-9]+\*|[0-9]+\-[0-9]*\*|[0-9]*\-[0-9]+\*)(@)?)?((\^)((.)|\((([^@\s\|\\|\[|\]|\(|\)|#|`]|\\\@|\\\||\\\\|\\\[|\\\]|\\\(|\\\)|\\#|\\`)+)\)))[\?\-]\('
+
+    invalid_or_start:
+        name: invalid.illegal.or.start
+        match: '(?<=(\[|\())(\s)*\|'
+    invalid_or_end:
+        name: invalid.illegal.or.end
+        match: '\|(\s)*(?=(\]|\)))'
+    
+    invalid_symbol:
+        name: invalid.illegal.symbol
+        match: '\S'

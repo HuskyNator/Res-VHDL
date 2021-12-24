@@ -1,0 +1,35 @@
+{
+    "repository": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS",
+    "name": "asn",
+    "displayName": "ASN",
+    "description": "Adrian Syntax Notation Highlighting",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.63.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "markdown.previewScripts": [],
+        "languages": [
+            {
+                "id": "asn",
+                "aliases": [
+                    "ASN"
+                ],
+                "extensions": [
+                    "asn"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "asn",
+                "scopeName": "source.asn",
+                "path": "./syntaxes/asn.tmLanguage.json"
+            }
+        ]
+    }
+}
