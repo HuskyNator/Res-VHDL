@@ -1,10 +1,16 @@
 {
-    "repository": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS",
+    "repository": {
+        "url": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS"},
     "name": "asn",
     "displayName": "ASN",
     "description": "Adrian Syntax Notation Highlighting",
     "version": "0.0.1",
     "icon": "images/icon.png",
+    "keywords": ["asn", "metasyntax-notation"],
+    "author": {
+        "name": "HuskyNator"
+    },
+    "license": "ISC",
     "engines": {
         "vscode": "^1.63.0"
     },
