@@ -4,6 +4,7 @@
     "displayName": "ASN",
     "description": "Adrian Syntax Notation Highlighting",
     "version": "0.0.1",
+    "icon": "images/icon.png",
     "engines": {
         "vscode": "^1.63.0"
     },
