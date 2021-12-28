@@ -1,10 +1,9 @@
 
 package CircPackage is
-  generic (type T; L: integer);
-  type Tarray is array (natural range <>) of T;
   function selectorSize(L : integer) return integer;
 end package;
-package body CircPackge is
+
+package body CircPackage is
   function selectorSize(L : integer) return integer is
     variable power : integer := 1;
     variable count : integer := 0;
@@ -17,7 +16,13 @@ package body CircPackge is
   end function;
 end package body;
 
-use work.CircPackage.selectorSize;
+package CircTypePackage is
+  generic (type T);
+  type Tarray is array (natural range <>) of T;
+end package;
+
+use work.CircPackage.all;
+use work.ClockPackage.all;
 entity CircE is
   generic (
     type T;
@@ -32,7 +37,7 @@ entity CircE is
   constant S : integer := selectorSize(L);
 end entity CircE;
 
-use IEEE.numeric_std.all;
+use ieee.numeric_std.all;
 architecture CircA of CircE is
   signal selected : Tarray(1 downto 0);
   signal index : integer;

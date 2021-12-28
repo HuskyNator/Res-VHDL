@@ -1,9 +1,12 @@
 
-type Clock is record
-	value: bit := '0';
-	count: integer := 0;
-end record;
+package ClockPackage is
+	type Clock is record
+		value: bit;
+		count: integer;
+	end record;
+end package;
 
+use work.ClockPackage.Clock;
 entity ClockE is
 	generic(period: time);
 	port(clock: inout Clock);

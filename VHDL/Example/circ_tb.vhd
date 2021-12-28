@@ -2,18 +2,20 @@
 entity circ_tb is
 end entity;
 
-use std.env.finish;
+package TypePackage is new work.CircTypePackage generic map(T=>bit);
 
+use std.env.finish;
+use work.ClockPackage.all;
+use work.TypePackage.all;
+use ieee.numeric_std.all;
 architecture circ_tb of circ_tb is
 	signal clock : Clock;
 	signal a,b: bit_vector(1 downto 0);
 	signal selector: bit_vector(0 downto 0);
 	signal ares, bres: bit;
 begin
-	clockc: entity work.clock(ClockC) generic map(time => 5 ns) port map(clock => clock);
-	circ: entity work.circ(CircA) generic map(bit, bit_vector, 2) port map(clock => clock, a=>a, b=>b, selector => selector, result => res);
-		ares <= res(0);
-		bres <= res(1);
+	clockc: entity work.ClockE(ClockC) generic map(time => 5 ns) port map(clock => clock);
+	circ: entity work.CircE(CircA) generic map(bit, bit_vector, 2) port map(clock => clock, a=>a, b=>b, selector => selector, result(0) => ares, result(1) => bres);
 
 	process
 		variable bits: bit_vector(1 downto 0);
