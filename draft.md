@@ -1,3 +1,38 @@
+## Conditionals
+### VHDL
+```asn
+if @condition then
+	@statements
+@*[else if @condition then
+	@statements
+]@?[else
+	@statements
+]end if;
+```
+### Res
+```asn
+if (@condition) {
+	@statements
+} @*[@[elif|else if] (@condition) {
+	@statements
+}] @?[else {
+	@statements
+}]
+```
+
+```asn
+if (@condition)
+	@statement
+@*[@[elif|else if] (@condition)
+	@statement
+] @?[else
+	@statement
+]
+```
+---
+
+# Temporary Exploration
+
 ## VHDL
 _TODO_
 
