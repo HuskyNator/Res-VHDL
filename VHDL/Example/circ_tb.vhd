@@ -7,7 +7,10 @@ package TypePackage is new work.CircTypePackage generic map(T=>bit);
 use std.env.finish;
 use work.ClockPackage.all;
 use work.TypePackage.all;
+
+library ieee;
 use ieee.numeric_std.all;
+use work.ClockPackage.all;
 architecture circ_tb of circ_tb is
 	signal clock : Clock;
 	signal a,b: bit_vector(1 downto 0);
