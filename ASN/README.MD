@@ -6,6 +6,7 @@ It is designed to
 ---
 ## Notation
 1. Productions are defined as: `production = elements\`
+	1. Production names should start with a letter or underscore(`_`) and may contain numbers and hyphens(`-`).
 2. All special elements are denoted by a prefixed `@`:
 	1. Placeholders:
 		+ `@production`
