@@ -1,9 +1,20 @@
 {
-    "repository": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS",
+    "repository": {
+        "url": "https://github.com/HuskyNator/Res-VHDL/tree/ANS/ANS"
+    },
     "name": "asn",
     "displayName": "ASN",
     "description": "Adrian Syntax Notation Highlighting",
-    "version": "0.0.1",
+    "version": "0.0.2",
+    "icon": "images/icon.png",
+    "keywords": [
+        "asn",
+        "metasyntax-notation"
+    ],
+    "author": {
+        "name": "HuskyNator"
+    },
+    "license": "ISC",
     "engines": {
         "vscode": "^1.63.0"
     },
@@ -22,6 +33,10 @@
                     "asn"
                 ],
                 "configuration": "./language-configuration.json"
+            },
+            {
+                "id": "asn-injection",
+                "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [
@@ -29,6 +44,17 @@
                 "language": "asn",
                 "scopeName": "source.asn",
                 "path": "./syntaxes/asn.tmLanguage.json"
+            },
+            {
+                "language": "asn-injection",
+                "scopeName": "asn.injection",
+                "path": "./syntaxes/asn-injection.tmLanguage.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "asn.injection.code": "asn"
+                }
             }
         ]
     }

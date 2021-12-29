@@ -1,0 +1,21 @@
+$schema: https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json
+scopeName: asn.injection
+injectionSelector: L:markup.fenced_code.block.markdown
+patterns:
+    - include: "#injection_backtick"
+    - include: "#injection_tilde"
+repository:
+    injection_backtick:
+      name: asn.injection.backtick
+      begin: '(?<=^\s*\`{3,})(asn|ASN)\s*$' # Does not ensure the closing backticks match, though matching may not be necessary.
+      while: '^(?!\s{0,3}\`{3,}\s*$)' # Largely undocumented. Likely attempts match with next line before content matches.
+      contentName: asn.injection.code
+      patterns:
+        - include: source.asn
+    injection_tilde:
+      name: asn.injection.tilde
+      begin: '(?<=^\s*~{3,})(asn|ASN)\s*$' # Does not ensure the closing backticks match, though matching may not be necessary.
+      while: '^(?!\s{0,3}~{3,}\s*$)' # Largely undocumented. Likely attempts match with next line before content matches.
+      contentName: asn.injection.code
+      patterns:
+        - include: source.asn
