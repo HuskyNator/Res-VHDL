@@ -57,7 +57,7 @@ porttype = "in" | "out" | "inout" | "buffer";
 ```asn
 entity =
 	entity @name is
-		@?@[generic \(@^;*[@generic]\);]
+		@?[generic \(@^;*[@generic]\);]
 		@?[port \(@?^;+[@port]\);]
 	end @?entity @?@name;\
 

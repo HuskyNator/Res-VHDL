@@ -36,6 +36,14 @@
                 "language": "asn",
                 "scopeName": "source.asn",
                 "path": "./syntaxes/asn.tmLanguage.json"
+            },
+            {
+                "scopeName": "asn.injection",
+                "path": "./syntaxes/asn-injection.tmLanguage.json",
+                "injectTo": ["text.html.markdown"],
+                "embeddedLanguages": {
+                    "asn.injection.code": "asn"
+                }
             }
         ]
     }

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "scopeName": "asn.injection",
+  "injectionSelector": "L:markup.fenced_code.block.markdown",
+  "patterns": [
+    {
+      "include": "#injection_backtick"
+    },
+    {
+      "include": "#injection_tilde"
+    }
+  ],
+  "repository": {
+    "injection_backtick": {
+      "name": "asn.injection.backtick",
+      "begin": "^\\s*\\`{3,}\\s*$",
+      "end": "^\\s{0,3}\\`{3,}\\s*$",
+      "contentName": "asn.injection.code",
+      "patterns": [
+        {
+          "match": "^a$",
+          "name": "test.thing"
+        },
+        {
+          "include": "source.asn"
+        }
+      ]
+    },
+    "injection_tilde": {
+      "name": "asn.injection.tilde",
+      "begin": "^\\s*~{3,}\\s*(?i)(asn)(?-i)\\s*$",
+      "end": "^\\3{0,3}~{3,}\\s*$",
+      "contentName": "asn.injection.code",
+      "patterns": [
+        {
+          "include": "source.asn"
+        }
+      ]
+    }
+  }
+}
