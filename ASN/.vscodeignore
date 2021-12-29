@@ -3,5 +3,12 @@
 .gitignore
 vsc-extension-quickstart.md
 
+src/**
+.yarnrc
+**/tsconfig.json
+**/.eslintrc.json
+**/*.map
+**/*.ts
+
 syntaxes/asn.tmLanguage.yaml
 images/icon2.png

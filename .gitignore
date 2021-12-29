@@ -1,3 +1,6 @@
 
 .vscode/
 *.vsix
+
+ASN/out/
+ASN/node_modules/
