@@ -16,7 +16,7 @@
   "repository": {
     "production": {
       "name": "meta.class",
-      "begin": "^\\s*([a-zA-Z_]+)\\s*(=)",
+      "begin": "^\\s*([a-zA-Z_][\\w\\-]*)\\s*(=)",
       "end": "(?<!\\\\)(\\\\)(?![\\@\\\\\\|\\[\\]\\(\\)`])",
       "beginCaptures": {
         "1": {
@@ -114,7 +114,7 @@
     },
     "placeholder": {
       "name": "variable.other.placeholder",
-      "match": "((@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*))?(@)([a-zA-Z_]\\w*)",
+      "match": "((@)([\\?|\\+|\\*]|[0-9]+\\*|[0-9]+\\-[0-9]*\\*|[0-9]*\\-[0-9]+\\*))?(@)([a-zA-Z_][\\w\\-]*)",
       "captures": {
         "1": {
           "name": "keyword.operator.count"

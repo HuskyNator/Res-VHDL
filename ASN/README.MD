@@ -4,12 +4,9 @@ It is designed to
 - Reduce extensive `"` use.
 - Simplify delimited lists.
 ---
-## Example
-_TODO_
-
----
 ## Notation
 1. Productions are defined as: `production = elements\`
+	1. Production names should start with a letter or underscore(`_`) and may contain numbers and hyphens(`-`).
 2. All special elements are denoted by a prefixed `@`:
 	1. Placeholders:
 		+ `@production`
@@ -40,3 +37,34 @@ _TODO_
 ## Future Considerations
 - Possibly customize delimiter, if possible.
 - Possibly add whitespace sensitivity. This could be moving more towards ABNF, though delimiters could also be used to refer to whitespace tokens like `@tab`.
+
+## Example
+### Extended Backus-Naur Form (EBNF):
+```
+entity =
+	"entity", name, "is",
+		["generic", "(" generic, {";" , generic}, ")"],
+		["port", "(" port , {";" , port}, ")"],
+	"end", ["entity"], [name], ";";
+
+generic = name, ":", type, [":=", default_value];
+
+port = name, ":", porttype, type;
+
+porttype = "in" | "out" | "inout" | "buffer";
+```
+
+### Adrian Syntax Notation (ASN):
+```asn
+entity =
+	entity @name is
+		@?[generic \(@^;*[@generic]\);]
+		@?[port \(@?^;+[@port]\);]
+	end @?entity @?@name;\
+
+generic = @name : @type @?[:= @default_value]\
+
+port = @name : @porttype @type\
+
+porttype = @[in | out | inout | buffer]\
+```
