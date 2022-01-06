@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/res-vhdl
+res-vhdl.so
+res-vhdl.dylib
+res-vhdl.dll
+res-vhdl.a
+res-vhdl.lib
+res-vhdl-test-*
+*.exe
+*.o
+*.obj
+*.lst

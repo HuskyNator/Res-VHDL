@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"HuskyNator"
+	],
+	"copyright": "Copyright © 2022, HuskyNator",
+	"description": "Resyntax of VHDL with better generics",
+	"license": "ISC",
+	"name": "res-vhdl"
+}
