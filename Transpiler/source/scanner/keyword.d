@@ -1,5 +1,4 @@
 module scanner.keyword;
-import scanner;
 
 enum Keyword {
 	import_,
